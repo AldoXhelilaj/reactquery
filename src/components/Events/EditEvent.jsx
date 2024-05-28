@@ -12,20 +12,29 @@ export default function EditEvent() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data: event, isPending } = useQuery({
-    queryKey: ['event', id],
+    queryKey: ['event-details', id],
     queryFn: () => getSingleEvent({ id })
   })
   const { mutate } = useMutation({
-    mutationFn:  updateEvent,
-    onMutate: () => {
-    queryClient.invalidateQueries({ queryKey: ['event'] })
+    mutationFn: updateEvent,
+    onMutate: async (data) => {
+      const newEvent = data.event;
+      await queryClient.cancelQueries({ queryKey: ['event-details', data.id] });
+      const previousEvent = queryClient.getQueryData(['event-details', data.id]);
+      queryClient.setQueryData(['event-details', data.id], newEvent);
+      return { previousEvent, data };
     },
-
-
-  })
+    onError: (error, data, context) => {
+      queryClient.setQueryData(['event-details', data.id], context.previousEvent);
+    },
+    onSettled: (data) => {
+      // Update the cache with the new data after a successful mutation
+      queryClient.setQueryData(['event-details', data.id], data);
+    },
+  });
 
   function handleSubmit(formData) {
-    mutate({ id ,event: formData })
+    mutate({ id, event: formData })
     navigate('../')
 
   }
