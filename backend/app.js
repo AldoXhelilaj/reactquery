@@ -32,7 +32,7 @@ app.get('/events', async (req, res) => {
       return searchableText.toLowerCase().includes(search.toLowerCase());
     });
   }
-
+ 
   if (max) {
     events = events.slice(events.length - max, events.length);
   }
