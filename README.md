@@ -2,6 +2,8 @@
 
 This is a React-based web application that utilizes the React Query library for managing data fetching and caching. The app allows users to interact with a backend that handles CRUD operations for events.
 
+## https://reactquery-nine.vercel.app/events
+
 ## Features
 
 - Fetch and display a list of events
