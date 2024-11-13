@@ -1,12 +1,15 @@
 import fs from 'node:fs/promises';
-
+import path from 'path';
 import bodyParser from 'body-parser';
 import express from 'express';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
+
+
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -169,7 +172,9 @@ app.delete('/events/:id', async (req, res) => {
     res.json({ message: 'Event deleted' });
   }, 1000);
 });
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 app.listen(3000, () => {
   console.log('Server running on port 3000');
 });
